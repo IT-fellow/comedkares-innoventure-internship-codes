@@ -1,0 +1,73 @@
+const int leftMotorSpeedPin = 9;  // PWM pin for left motor speed control
+const int leftMotorDirection1 = 8;  // Direction pin 1 for left motor
+const int leftMotorDirection2 = 7;  // Direction pin 2 for left motor
+const int rightMotorSpeedPin = 6; // PWM pin for right motor speed control
+const int rightMotorDirection1 = 5;  // Direction pin 1 for right motor
+const int rightMotorDirection2 = 4;  // Direction pin 2 for right motor
+
+void setup() {
+  // Initialize motor control pins as outputs
+  pinMode(leftMotorSpeedPin, OUTPUT);
+  pinMode(leftMotorDirection1, OUTPUT);
+  pinMode(leftMotorDirection2, OUTPUT);
+  pinMode(rightMotorSpeedPin, OUTPUT);
+  pinMode(rightMotorDirection1, OUTPUT);
+  pinMode(rightMotorDirection2, OUTPUT);
+  
+  // Set the baud rate for Serial communication
+  Serial.begin(9600);
+}
+
+void loop() {
+  if (Serial.available() > 0) {
+    char command = Serial.read();
+    executeCommand(command);
+  }
+}
+
+void executeCommand(char command) {
+  // Motor control logic based on received commands
+  switch (command) {
+    case 'F':
+      Serial.println("f");// Move forward
+      digitalWrite(leftMotorDirection1, HIGH);
+      digitalWrite(leftMotorDirection2, LOW);
+      digitalWrite(rightMotorDirection1, HIGH);
+      digitalWrite(rightMotorDirection2, LOW);
+      analogWrite(leftMotorSpeedPin, 255); // Full speed
+      analogWrite(rightMotorSpeedPin, 255);
+      break;
+    case 'B':
+      Serial.println("b");// Move backward
+      digitalWrite(leftMotorDirection1, LOW);
+      digitalWrite(leftMotorDirection2, HIGH);
+      digitalWrite(rightMotorDirection1, LOW);
+      digitalWrite(rightMotorDirection2, HIGH);
+      analogWrite(leftMotorSpeedPin, 255); // Full speed
+      analogWrite(rightMotorSpeedPin, 255);
+      break;
+    case 'L':
+      Serial.println("l");// Turn left
+      digitalWrite(leftMotorDirection1, LOW);
+      digitalWrite(leftMotorDirection2, HIGH);
+      digitalWrite(rightMotorDirection1, HIGH);
+      digitalWrite(rightMotorDirection2, LOW);
+      analogWrite(leftMotorSpeedPin, 100); // Reduce left motor speed
+      analogWrite(rightMotorSpeedPin, 100);
+      break;
+    case 'R':
+      Serial.println("r");// Turn right
+      digitalWrite(leftMotorDirection1, HIGH);
+      digitalWrite(leftMotorDirection2, LOW);
+      digitalWrite(rightMotorDirection1, LOW);
+      digitalWrite(rightMotorDirection2, HIGH);
+      analogWrite(leftMotorSpeedPin, 100); // Reduce right motor speed
+      analogWrite(rightMotorSpeedPin, 100);
+      break;
+    case 'S':
+      Serial.println("s");// Stop
+      analogWrite(leftMotorSpeedPin, 0);
+      analogWrite(rightMotorSpeedPin, 0);
+      break;
+  }
+}
